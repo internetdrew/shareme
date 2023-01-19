@@ -21,6 +21,8 @@ const Login = () => {
           autoPlay
           className='w-full h-full object-cover'
         ></video>
+
+        <div className='absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay'></div>
       </div>
     </div>
   );

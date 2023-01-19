@@ -7,7 +7,9 @@ const GoogleLogin = () => {
 
   const handleCredentialResponse = response => {
     const userObject = jwt_decode(response.credential);
-    setUser(userObject);
+    localStorage.setItem('user', JSON.stringify(userObject));
+
+    const { name, sub, picture } = userObject;
   };
 
   useEffect(() => {

@@ -7,9 +7,6 @@ import logo from '../assets/logowhite.png';
 import GoogleLogin from './GoogleLogin';
 
 const Login = () => {
-  useEffect(() => {
-    console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
-  }, []);
   return (
     <div className='flex justify-start items-center flex-col h-screen'>
       <div className='relative w-full h-full'>

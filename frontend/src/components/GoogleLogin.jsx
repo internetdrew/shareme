@@ -1,15 +1,28 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import { client } from '../client';
 
 const GoogleLogin = () => {
-  const [user, setUser] = useState({});
+  const navigate = useNavigate();
 
   const handleCredentialResponse = response => {
     const userObject = jwt_decode(response.credential);
     localStorage.setItem('user', JSON.stringify(userObject));
 
-    const { name, sub, picture } = userObject;
+    const { name, sub: googleId, picture: imageUrl } = userObject;
+
+    const doc = {
+      _id: googleId,
+      _type: 'user',
+      userName: name,
+      image: imageUrl,
+    };
+
+    client.createIfNotExists(doc).then(() => {
+      navigate('/', { replace: true });
+    });
   };
 
   useEffect(() => {

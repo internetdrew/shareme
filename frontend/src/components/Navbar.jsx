@@ -8,25 +8,27 @@ const Navbar = ({ searchTerm, setSearchTerm, user }) => {
   if (!user) return null;
 
   return (
-    <div className='flex gap-2 md:gap-5 w-full mt-5 pb-7'>
-      <div className='flex items-center w-full p-2 rounded-md bg-white border-none outline-none focus-within:shadow-sm'>
+    <div className='flex gap-2 md:gap-5 w-full mt-5 pb-8'>
+      <div className='flex p-2 rounded-md bg-white items-center border-none outline-none focus-within:shadow-sm grow'>
         <IoMdSearch fontSize={21} className='ml-1' />
         <input
           type='text'
-          className='w-1/3 outline-none bg-white ml-2 p-1'
+          className='w-1/2 outline-none bg-white ml-2 p-1'
           onChange={e => setSearchTerm(e.target.value)}
           placeholder='Search'
           value={searchTerm}
           onFocus={() => navigate('/search')}
         />
       </div>
-      <div className='flex gap-3'>
-        <Link>
-          <img
-            src={user.image}
-            alt='user'
-            className='hidden w-12 hg-12 rounded-full md:inline-block'
-          />
+      <div className='flex items-center justify-end gap-2'>
+        <Link to={`user-profile/${user?._id}`} className='hidden md:block'>
+          <img src={user.image} alt='user' className='w-12 rounded-full' />
+        </Link>
+        <Link
+          to='/create-pin'
+          className='bg-black text-white flex justify-center items-center w-12 h-12 rounded-full'
+        >
+          <IoMdAdd />
         </Link>
       </div>
     </div>

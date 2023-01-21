@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import shareVideo from '../assets/share.mp4';
 import logo from '../assets/logowhite.png';
-import { GoogleLogin } from './';
+import GoogleLogin from './GoogleLogin';
 
 const Login = () => {
   return (

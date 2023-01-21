@@ -12,19 +12,19 @@ const isActiveStyle =
 
 const categories = [
   {
-    name: 'Animals',
+    name: 'animals',
   },
   {
-    name: 'Wallpapers',
+    name: 'wallpapers',
   },
   {
-    name: 'Photography',
+    name: 'photography',
   },
   {
-    name: 'Gaming',
+    name: 'gaming',
   },
   {
-    name: 'Coding',
+    name: 'coding',
   },
 ];
 
@@ -70,6 +70,20 @@ const Sidebar = ({ user, closeToggle }) => {
           ))}
         </div>
       </div>
+      {user && (
+        <Link
+          to={`user-profile/${user._id}`}
+          className='flex p-3 my-5 mb-3 gap-2 justify-center items-center bg-white rounded-lg shadow-lg mx-3'
+          onClick={handleCloseSidebar}
+        >
+          <img
+            src={user.image}
+            alt='user-image'
+            className='rounded-full w-10 h-10'
+          />
+          <p>{user.userName}</p>
+        </Link>
+      )}
     </div>
   );
 };

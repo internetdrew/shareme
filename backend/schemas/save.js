@@ -4,10 +4,9 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'savedBy',
-      title: 'SavedBy',
-      type: 'reference',
-      to: [{type: 'user'}],
+      name: 'postedBy',
+      title: 'PostedBy',
+      type: 'postedBy',
     },
     {
       name: 'userId',

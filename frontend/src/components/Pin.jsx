@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { MdDownloadForOffline } from 'react-icons/md';
@@ -6,12 +6,19 @@ import { AiTwotoneDelete } from 'react-icons/ai';
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs';
 
 import { client, urlFor } from '../client';
+import { fetchUser } from '../utils/fetchUser';
 
-const Pin = ({ pin: { postedBy, image, _id, destination } }) => {
+const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
-
   const navigate = useNavigate();
+  const user = fetchUser();
+
+  const alreadySaved = save?.filter(item => item.postedBy._id === user?.sub);
+
+  useEffect(() => {
+    console.log(alreadySaved);
+  }, []);
 
   return (
     <div className='m-2'>
@@ -42,6 +49,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination } }) => {
                   <MdDownloadForOffline />
                 </a>
               </div>
+              <button>{alreadySaved ? 'Saved' : 'Save'}</button>
             </div>
           </div>
         )}

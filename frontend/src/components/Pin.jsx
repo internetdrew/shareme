@@ -8,17 +8,18 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs';
 import { client, urlFor } from '../client';
 import { fetchUser } from '../utils/fetchUser';
 
-const Pin = ({ pin: { postedBy, image, _id, destination, saves } }) => {
+const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
   const navigate = useNavigate();
   const user = fetchUser();
 
-  const alreadySaved = !!saves?.filter(item => item.postedBy?._id === user?.sub)
+  const alreadySaved = !!save?.filter(item => item.postedBy?._id === user?.sub)
     ?.length;
 
   const savePin = id => {
     if (!alreadySaved) {
+      console.log('not saved yet');
       setSavingPost(true);
 
       client
@@ -43,7 +44,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, saves } }) => {
   };
 
   useEffect(() => {
-    console.log();
+    console.log(save);
   }, []);
 
   return (
@@ -80,7 +81,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, saves } }) => {
                   type='button'
                   className='bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none'
                 >
-                  {saves?.length} Saved
+                  {save?.length} Saved
                 </button>
               ) : (
                 <button

@@ -8,13 +8,13 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs';
 import { client, urlFor } from '../client';
 import { fetchUser } from '../utils/fetchUser';
 
-const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
+const Pin = ({ pin: { postedBy, image, _id, destination, saves } }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
   const navigate = useNavigate();
   const user = fetchUser();
 
-  const alreadySaved = !!save?.filter(item => item.postedBy?._id === user?.sub)
+  const alreadySaved = !!saves?.filter(item => item.savedBy?._id === user?.sub)
     ?.length;
 
   const savePin = id => {
@@ -24,13 +24,13 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
 
       client
         .patch(id)
-        .setIfMissing({ save: [] })
-        .insert('after', 'save[-1]', [
+        .setIfMissing({ saves: [] })
+        .insert('after', 'saves[-1]', [
           {
             _key: uuidv4(),
             userId: user?.sub,
-            postedBy: {
-              _type: 'postedBy',
+            savedBy: {
+              _type: 'savedBy',
               _ref: user?.sub,
             },
           },
@@ -42,10 +42,6 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
         });
     }
   };
-
-  useEffect(() => {
-    console.log(save);
-  }, []);
 
   return (
     <div className='m-2'>
@@ -81,7 +77,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                   type='button'
                   className='bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none'
                 >
-                  {save?.length} Saved
+                  Saved
                 </button>
               ) : (
                 <button

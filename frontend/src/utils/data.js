@@ -31,25 +31,25 @@ export const searchQuery = searchTerm => {
   return query;
 };
 
-export const feedQuery = `*[_type == 'pin'] | order(_createAt desc) {
-  image {
-      asset -> {
-        url
-      },
-    },
-    _id,
-    destination,
-    postedBy -> {
+export const feedQuery = `*[_type == "pin"] | order(_createdAt desc) {
+  image{
+    asset->{
+      url
+    }
+  },
       _id,
-      userName, 
-      image
-    },
-    save[]{
-      _key,
-      postedBy -> {
+      destination,
+      postedBy->{
         _id,
-        userName, 
+        userName,
         image
       },
-    },
-}`;
+      save[]{
+        _key,
+        postedBy->{
+          _id,
+          userName,
+          image
+        },
+      },
+    } `;

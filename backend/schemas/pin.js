@@ -42,8 +42,8 @@ export default {
       type: 'postedBy',
     },
     {
-      name: 'saves',
-      title: 'Saves',
+      name: 'save',
+      title: 'Save',
       type: 'array',
       of: [{type: 'save'}],
     },

@@ -50,6 +50,45 @@ const CreatePin = ({ user }) => {
     }
   };
 
+  const savePin = () => {
+    const allInputsValid =
+      title.trim() &&
+      about.trim() &&
+      destination.trim() &&
+      imageAsset?._id &&
+      category;
+
+    if (!allInputsValid) {
+      setMissingFields(true);
+      setTimeout(() => setMissingFields(false), 2000);
+      return;
+    }
+
+    const doc = {
+      _type: 'pin',
+      title,
+      about,
+      destination,
+      image: {
+        _type: 'image',
+        asset: {
+          _type: 'reference',
+          _ref: imageAsset?._id,
+        },
+      },
+      userId: user?._id,
+      postedBy: {
+        _type: 'postedBy',
+        _ref: user?._id,
+      },
+      category,
+    };
+
+    client.create(doc).then(() => {
+      navigate('/');
+    });
+  };
+
   return (
     <div className='flex flex-col justify-center items-center mt-5 lg:h-4/5'>
       {missingFields && (
@@ -143,21 +182,31 @@ const CreatePin = ({ user }) => {
                 Choose pin category
               </p>
               <select
-                onChange={e => setCategory(e.target.value)}
-                className='outline-none w-full text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer form-select appearance-none'
+                onChange={e =>
+                  setCategory(
+                    e.target.value === 'select' ? null : e.target.value
+                  )
+                }
+                className='outline-none w-full text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer appearance-none'
               >
-                <option value='other' className='bg-white'>
+                <option value='select' className='bg-white'>
                   Select Category
                 </option>
                 {categories.map(category => (
-                  <option
-                    className='text-base capitalize border-0 outline-none bg-white text-black'
-                    value={category.name}
-                  >
+                  <option key={category.name} value={category.name}>
                     {category.name}
                   </option>
                 ))}
               </select>
+            </div>
+            <div className='flex justify-center items-end mt-10 md:mt-5 md:justify-end'>
+              <button
+                type='button'
+                onClick={savePin}
+                className='bg-red-500 text-white font-bold p-2 rounded-full w-28 outline-none'
+              >
+                Save Pin
+              </button>
             </div>
           </div>
         </div>

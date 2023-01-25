@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { client } from '../client';
 import Spinner from './Spinner';
 import { categories } from '../utils/data';
+import { BsCloudLightning } from 'react-icons/bs';
 
 const CreatePin = ({ user }) => {
   const [title, setTitle] = useState('');
@@ -37,7 +38,6 @@ const CreatePin = ({ user }) => {
             filename: name,
           })
           .then(document => {
-            console.log(document);
             setImageAsset(document);
             setLoading(false);
           })
@@ -62,7 +62,7 @@ const CreatePin = ({ user }) => {
           <div className='flex justify-center items-center flex-col border-2 border-dotted border-gray-300 p-3 w-full h-420'>
             {loading && <Spinner />}
             {wrongImageType && <p className='text-red-500'>Wrong image type</p>}
-            {!imageAsset ? (
+            {!imageAsset && !loading ? (
               <label>
                 <div className='flex flex-col items-center justify-center h-full'>
                   <div className='flex flex-col justify-center items-center hover:cursor-pointer'>
@@ -83,9 +83,36 @@ const CreatePin = ({ user }) => {
                 />
               </label>
             ) : (
-              <p>something else</p>
+              <div className='relative h-full'>
+                {imageAsset && !loading && (
+                  <>
+                    <img
+                      src={imageAsset?.url}
+                      alt='uploaded-pic'
+                      className='h-full w-full'
+                    />
+                    <button
+                      type='button'
+                      className='absolute bottom-3 right-3 p-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out'
+                      onClick={() => setImageAsset(null)}
+                    >
+                      <MdDelete />
+                    </button>
+                  </>
+                )}
+              </div>
             )}
           </div>
+        </div>
+
+        <div className='flex flex-1 flex-col gap-6 lg:pl-5 mt-5 w-full'>
+          <input
+            type='text'
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder='Add your title here'
+            className='outline-none text-2xl sm:text-3xl font-bold border-b-2 border-gray-200 p-2'
+          />
         </div>
       </div>
     </div>

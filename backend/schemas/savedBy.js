@@ -1,6 +1,6 @@
 export default {
   name: 'savedBy',
-  title: 'SavedByXX',
+  title: 'SavedBy',
   type: 'reference',
   to: [{type: 'user'}],
 }

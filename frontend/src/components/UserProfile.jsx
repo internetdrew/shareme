@@ -21,7 +21,10 @@ const UserProfile = () => {
   const { userId } = useParams();
   const [randomImageUrl, setRandomImageUrl] = useState('');
 
-  const logout = () => {};
+  const logout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   useEffect(() => {
     const getRandomImage = async () => {
@@ -72,7 +75,7 @@ const UserProfile = () => {
             <h1 className='font-bold text-3xl text-center mt-3'>
               {user.userName}
             </h1>
-            <div className='absolute top-1 z-1 right-1 p-2'>
+            <div className='absolute top-2 z-1 right-1 p-2'>
               {userId === user._id && (
                 <button
                   type='button'

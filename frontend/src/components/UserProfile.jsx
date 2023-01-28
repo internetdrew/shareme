@@ -19,12 +19,10 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  // if (!user) {
-  //   return <Spinner message='Loading profile...' />;
-  // }
+  const randomImage =
+    'https://source.unsplash.com/1600*900/?nature,photography,technology';
 
   useEffect(() => {
-    console.log('here');
     const query = userQuery(userId);
 
     client.fetch(query).then(data => {
@@ -33,7 +31,21 @@ const UserProfile = () => {
     });
   }, [userId]);
 
-  return <div>UserProfile</div>;
+  if (!user) {
+    return <Spinner message='Loading profile...' />;
+  }
+
+  return (
+    <div className='relative pb-2 h-full justify-center items-center'>
+      <div className='flex flex-col pb-5'>
+        <div className='relative flex flex-col mb-7'>
+          <div className='flex flex-col justify-center items-center'>
+            <img src={randomImage} alt='' className='w-full h-370 2xl:h' />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default UserProfile;

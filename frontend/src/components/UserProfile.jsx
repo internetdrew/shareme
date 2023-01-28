@@ -21,6 +21,8 @@ const UserProfile = () => {
   const { userId } = useParams();
   const [randomImageUrl, setRandomImageUrl] = useState('');
 
+  const logout = () => {};
+
   useEffect(() => {
     const getRandomImage = async () => {
       const res = await fetch(
@@ -62,6 +64,25 @@ const UserProfile = () => {
               alt='banner-pic'
               className='w-full h-370 2xl:h-510 shadow-lg object-cover'
             />
+            <img
+              src={user.image}
+              alt='user-pic'
+              className='rounded-full w-20 h-20 -mt-10 shadow-xl object-cover'
+            />
+            <h1 className='font-bold text-3xl text-center mt-3'>
+              {user.userName}
+            </h1>
+            <div className='absolute top-1 z-1 right-1 p-2'>
+              {userId === user._id && (
+                <button
+                  type='button'
+                  className='g_id_signout w-fit bg-white py-2 px-4 rounded-full outline-none shadow-md opacity-90 cursor-pointer active:scale-95 select-none flex gap-2 items-center justify-center font-medium'
+                  onClick={logout}
+                >
+                  <AiOutlineLogout /> <span>Sign Out</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -12,6 +12,11 @@ import MasonryLayout from 'react-masonry-css';
 import Spinner from './Spinner';
 import { createApi } from 'unsplash-js';
 
+const activeBtnStyles =
+  'bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none select-none';
+const inactiveBtnStyles =
+  'bg-primary-500 mr-4 text-black font-bold p-2 rounded-full w-20 outline-none select-none';
+
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [pins, setPins] = useState(null);
@@ -53,6 +58,18 @@ const UserProfile = () => {
     });
   }, [userId]);
 
+  useEffect(() => {
+    if (text === 'Created') {
+      const createdPinsQuery = userCreatedPinsQuery(userId);
+
+      client.fetch(createdPinsQuery).then(data => setPins(data));
+      return;
+    }
+
+    const savedPinsQuery = userSavedPinsQuery(userId);
+    client.fetch(savedPinsQuery).then(data => setPins(data));
+  }, [text, userId]);
+
   if (!user) {
     return <Spinner message='Loading profile...' />;
   }
@@ -87,6 +104,38 @@ const UserProfile = () => {
               )}
             </div>
           </div>
+          <div className='text-center mb-7'>
+            <button
+              type='button'
+              onClick={e => {
+                setText(e.target.textContent);
+                setActiveBtn('created');
+              }}
+              className={`${
+                activeBtn === 'created' ? activeBtnStyles : inactiveBtnStyles
+              }`}
+            >
+              Created
+            </button>
+            <button
+              type='button'
+              onClick={e => {
+                setText(e.target.textContent);
+                setActiveBtn('saved');
+              }}
+              className={`${
+                activeBtn === 'saved' ? activeBtnStyles : inactiveBtnStyles
+              }`}
+            >
+              Saved
+            </button>
+          </div>
+
+          {pins?.length && (
+            <div className='px-2 items-center'>
+              <MasonryLayout pins={pins} />
+            </div>
+          )}
         </div>
       </div>
     </div>

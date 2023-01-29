@@ -8,7 +8,7 @@ import {
   userSavedPinsQuery,
 } from '../utils/data';
 import { client } from '../client';
-import MasonryLayout from 'react-masonry-css';
+import MasonryLayout from './MasonryLayout';
 import Spinner from './Spinner';
 import { createApi } from 'unsplash-js';
 
@@ -130,7 +130,7 @@ const UserProfile = () => {
               Saved
             </button>
           </div>
-
+          {console.log(pins)}
           {pins?.length && (
             <div className='px-2 items-center'>
               <MasonryLayout pins={pins} />

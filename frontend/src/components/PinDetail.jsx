@@ -47,11 +47,15 @@ const PinDetail = ({ user }) => {
     return data[0];
   });
 
-  const morePinsQuery = useQuery(['morePins'], async () => {
-    const moreQuery = pinDetailMorePinQuery(pinDetails);
-    const data = await client.fetch(moreQuery);
-    return data;
-  });
+  const morePinsQuery = useQuery(
+    ['morePins'],
+    async () => {
+      const moreQuery = pinDetailMorePinQuery(pinDetails);
+      const data = await client.fetch(moreQuery);
+      return data;
+    },
+    { enabled: !!pinDetails }
+  );
 
   if (!pinDetails) return <Spinner message='Loading pin details...' />;
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import {
   userCreatedPinsQuery,
@@ -18,57 +19,46 @@ const inactiveBtnStyles =
   'bg-primary-500 mr-4 text-black font-bold p-2 rounded-full w-20 outline-none select-none';
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [pins, setPins] = useState(null);
-  const [text, setText] = useState('Created');
   const [activeBtn, setActiveBtn] = useState('created');
-  const [bannerImage, setBannerImage] = useState('');
+
   const navigate = useNavigate();
   const { userId } = useParams();
+
+  const { data: userData } = useQuery(['user'], async () => {
+    const query = userQuery(userId);
+    const data = await client.fetch(query);
+    return data[0];
+  });
+
+  const { data: images } = useQuery(['images'], async () => {
+    const res = await fetch(
+      `https://api.unsplash.com/photos/?client_id=${
+        import.meta.env.VITE_UNSPLASH_ACCESS_KEY
+      }`
+    );
+    return res.json();
+  });
+
+  const randomImageUrl = `${images?.[0]?.urls.regular}&w=1600&h=900`;
+
+  const { data: userCreatedPins } = useQuery(['createdPins'], async () => {
+    const createdPinsQuery = userCreatedPinsQuery(userId);
+    const data = await client.fetch(createdPinsQuery);
+    return data;
+  });
+
+  const { data: userSavedPins } = useQuery(['savedPins'], async () => {
+    const savedPinsQuery = userSavedPinsQuery(userId);
+    const data = await client.fetch(savedPinsQuery);
+    return data;
+  });
 
   const logout = () => {
     localStorage.clear();
     navigate('/login');
   };
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      const res = await fetch(
-        `https://api.unsplash.com/photos/?client_id=${
-          import.meta.env.VITE_UNSPLASH_ACCESS_KEY
-        }`
-      );
-
-      const data = await res.json();
-      console.log(data);
-      const imgUrls = data.map(image => `${image.urls.regular}&w=1600&w=900`);
-      const randomUrl = imgUrls[Math.floor(Math.random() * imgUrls.length)];
-      setBannerImage(randomUrl);
-    };
-    fetchImages();
-  }, []);
-
-  useEffect(() => {
-    const query = userQuery(userId);
-
-    client.fetch(query).then(data => {
-      setUser(data[0]);
-    });
-  }, [userId]);
-
-  useEffect(() => {
-    if (text === 'Created') {
-      const createdPinsQuery = userCreatedPinsQuery(userId);
-
-      client.fetch(createdPinsQuery).then(data => setPins(data));
-      return;
-    }
-
-    const savedPinsQuery = userSavedPinsQuery(userId);
-    client.fetch(savedPinsQuery).then(data => setPins(data));
-  }, [text, userId]);
-
-  if (!user) {
+  if (!userData) {
     return <Spinner message='Loading profile...' />;
   }
 
@@ -78,20 +68,20 @@ const UserProfile = () => {
         <div className='relative flex flex-col mb-7'>
           <div className='flex flex-col justify-center items-center'>
             <img
-              src={bannerImage}
+              src={randomImageUrl}
               alt='banner-pic'
               className='w-full h-370 2xl:h-510 shadow-lg object-cover'
             />
             <img
-              src={user.image}
+              src={userData.image}
               alt='user-pic'
               className='rounded-full w-20 h-20 -mt-10 shadow-xl object-cover'
             />
             <h1 className='font-bold text-3xl text-center mt-3'>
-              {user.userName}
+              {userData.userName}
             </h1>
             <div className='absolute top-2 z-1 right-1 p-2'>
-              {userId === user._id && (
+              {userId === userData._id ? (
                 <button
                   type='button'
                   className='g_id_signout w-fit bg-white py-2 px-4 rounded-full outline-none shadow-md opacity-90 cursor-pointer active:scale-95 select-none flex gap-2 items-center justify-center font-medium'
@@ -99,16 +89,13 @@ const UserProfile = () => {
                 >
                   <AiOutlineLogout /> <span>Sign Out</span>
                 </button>
-              )}
+              ) : null}
             </div>
           </div>
           <div className='text-center mb-7'>
             <button
               type='button'
-              onClick={e => {
-                setText(e.target.textContent);
-                setActiveBtn('created');
-              }}
+              onClick={() => setActiveBtn('created')}
               className={`${
                 activeBtn === 'created' ? activeBtnStyles : inactiveBtnStyles
               }`}
@@ -117,10 +104,7 @@ const UserProfile = () => {
             </button>
             <button
               type='button'
-              onClick={e => {
-                setText(e.target.textContent);
-                setActiveBtn('saved');
-              }}
+              onClick={() => setActiveBtn('saved')}
               className={`${
                 activeBtn === 'saved' ? activeBtnStyles : inactiveBtnStyles
               }`}
@@ -128,11 +112,11 @@ const UserProfile = () => {
               Saved
             </button>
           </div>
-          {pins?.length && (
-            <div className='px-2 items-center'>
-              <MasonryLayout pins={pins} />
-            </div>
-          )}
+          <div className='px-2 items-center'>
+            <MasonryLayout
+              pins={activeBtn === 'created' ? userCreatedPins : userSavedPins}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,4 @@
 import React from 'react';
-import { useEffect } from 'react';
-import { FcGoogle } from 'react-icons/fc';
 import shareVideo from '../assets/share.mp4';
 import logo from '../assets/logowhite.png';
 import GoogleLogin from './GoogleLogin';

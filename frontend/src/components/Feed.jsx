@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import { client } from '../client';
 import { feedQuery, searchQuery } from '../utils/data';
@@ -7,35 +8,20 @@ import MasonryLayout from './MasonryLayout';
 import Spinner from './Spinner';
 
 const Feed = () => {
-  const [loading, setLoading] = useState(false);
-  const [pins, setPins] = useState(null);
   const { categoryId } = useParams();
 
-  useEffect(() => {
-    setLoading(true);
+  const query = categoryId ? searchQuery(categoryId) : feedQuery;
 
-    if (categoryId) {
-      const query = searchQuery(categoryId);
+  const pinsQuery = useQuery(['pins', categoryId], async () => {
+    const data = await client.fetch(query);
+    return data;
+  });
 
-      client.fetch(query).then(data => {
-        setPins(data);
-        setLoading(false);
-      });
-      return;
-    }
+  if (pinsQuery.isLoading) {
+    return <Spinner message='Adding new ideas to your feed...' />;
+  }
 
-    client.fetch(feedQuery).then(data => {
-      setPins(data);
-      setLoading(false);
-    });
-  }, [categoryId]);
-
-  if (loading) return <Spinner message='Adding new ideas to your feed...' />;
-  return (
-    <div>
-      <MasonryLayout pins={pins} />
-    </div>
-  );
+  return <div>{<MasonryLayout pins={pinsQuery.data} />}</div>;
 };
 
 export default Feed;

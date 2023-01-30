@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { HiMenu } from 'react-icons/hi';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { Link, Route, Routes } from 'react-router-dom';
@@ -21,10 +21,6 @@ const Home = () => {
     const data = await client.fetch(query);
     return data[0];
   });
-
-  useEffect(() => {
-    scrollRef.current.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className='flex bg-gray-50 md:flex-row flex-col h-screen transition-height duration-75 ease-out'>

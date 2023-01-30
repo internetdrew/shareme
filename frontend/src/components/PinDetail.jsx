@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MdDownloadForOffline } from 'react-icons/md';
 import { Link, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,10 +8,9 @@ import MasonryLayout from './MasonryLayout';
 import { pinDetailMorePinQuery, pinDetailQuery } from '../utils/data';
 import Spinner from './Spinner';
 import { BsCheckLg } from 'react-icons/bs';
+import { useQuery } from '@tanstack/react-query';
 
 const PinDetail = ({ user }) => {
-  const [pins, setPins] = useState(null);
-  const [pinDetails, setPinDetails] = useState(null);
   const [comment, setComment] = useState('');
   const [addingComment, setAddingComment] = useState(false);
   const { pinId } = useParams();
@@ -41,28 +40,18 @@ const PinDetail = ({ user }) => {
         });
     }
   };
+  const query = pinDetailQuery(pinId);
 
-  const fetchPinDetails = () => {
-    let query = pinDetailQuery(pinId);
+  const { data: pinDetails } = useQuery(['pinDetails', pinId], async () => {
+    const data = await client.fetch(query);
+    return data[0];
+  });
 
-    if (query) {
-      client.fetch(query).then(data => {
-        setPinDetails(data[0]);
-
-        if (data[0]) {
-          query = pinDetailMorePinQuery(data[0]);
-
-          client.fetch(query).then(res => {
-            setPins(res);
-          });
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchPinDetails();
-  }, [pinId]);
+  const morePinsQuery = useQuery(['morePins'], async () => {
+    const moreQuery = pinDetailMorePinQuery(pinDetails);
+    const data = await client.fetch(moreQuery);
+    return data;
+  });
 
   if (!pinDetails) return <Spinner message='Loading pin details...' />;
 
@@ -160,12 +149,12 @@ const PinDetail = ({ user }) => {
           </div>
         </div>
       </div>
-      {pins?.length > 0 ? (
+      {morePinsQuery?.data ? (
         <>
           <h2 className='text-center font-bold text-2x mt-8 mb-4'>
             More like this...
           </h2>
-          <MasonryLayout pins={pins} />
+          <MasonryLayout pins={morePinsQuery.data} />
         </>
       ) : (
         <Spinner message='Loading more pins' />

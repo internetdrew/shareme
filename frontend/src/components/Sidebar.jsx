@@ -48,6 +48,11 @@ const Sidebar = ({ user, closeToggle }) => {
               }
               onClick={handleCloseSidebar}
             >
+              <img
+                src={category.image}
+                alt={`${category.name}-icon`}
+                className='w-8 h-8 rounded-full shadow-sm'
+              />
               {category.name}
             </NavLink>
           ))}

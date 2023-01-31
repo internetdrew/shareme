@@ -1,9 +1,12 @@
 {
+  "homepage": "https://internetdrew.github.io/shareme",
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -13,6 +16,7 @@
     "@sanity/image-url": "^1.0.1",
     "@tanstack/react-query": "^4.23.0",
     "@tanstack/react-query-devtools": "^4.23.0",
+    "gh-pages": "^5.0.0",
     "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

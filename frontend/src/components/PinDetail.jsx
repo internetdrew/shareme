@@ -152,7 +152,7 @@ const PinDetail = ({ user }) => {
           </div>
         </div>
       </div>
-      {morePinsQuery?.data ? (
+      {morePinsQuery?.data.length ? (
         <>
           <h2 className='text-center font-bold text-2x mt-8 mb-4'>
             More like this...
@@ -160,7 +160,9 @@ const PinDetail = ({ user }) => {
           <MasonryLayout pins={morePinsQuery.data} />
         </>
       ) : (
-        <Spinner message='Loading more pins' />
+        <div className='flex justify-center font-bold items-center w-full text-xl mt-8'>
+          No pins found.
+        </div>
       )}
     </>
   );
